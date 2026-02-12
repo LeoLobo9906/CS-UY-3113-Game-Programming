@@ -1,5 +1,0 @@
-.DS_Store
-.idea/
-cmake-build-*/
-*.o
-project1/hw1_app
