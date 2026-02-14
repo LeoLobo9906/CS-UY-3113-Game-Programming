@@ -55,11 +55,9 @@ constexpr float CHANDELURE_ROT_SPEED = 80.0f;
 
 float gChandelureRotation = 0.0f;
 
-// Relative offset from Dragonite (still “in relation”)
 constexpr float CHANDELURE_OFFSET_X = 150.0f;
 constexpr float CHANDELURE_OFFSET_Y = 80.0f;
 
-// Extra: small orbit around Dragonite so translation pattern differs
 float gChandelureOrbit = 0.0f;
 constexpr float CHANDELURE_ORBIT_RADIUS = 60.0f;
 constexpr float CHANDELURE_ORBIT_SPEED  = 3.5f;
@@ -102,7 +100,7 @@ void initialise()
     gBackground2 = LoadTexture("assets/background_2.png");
     gBackground3 = LoadTexture("assets/background_3.png");
 
-    // Starts Umbreon off-screen
+    // Umbreon off-screen
     gUmbreonPos.x = -200.0f;
 }
 
@@ -126,24 +124,22 @@ void update()
         if (gCurrentBG > 2) gCurrentBG = 0;
     }
 
-    // Dragonite (orbit around screen center)
+    // Dragonite
     gDragoniteOrbit += DRAGONITE_ORBIT_SPEED * deltaTime;
     float theta = gDragoniteOrbit;
 
     gDragonitePos.x = ORIGIN.x + DRAGONITE_RADIUS * cosf(theta);
     gDragonitePos.y = ORIGIN.y + DRAGONITE_RADIUS * sinf(theta);
 
-    // Umbreon scaling (heartbeat)
+    // Umbreon
     if (gUmbreonDir == Bigger)  gUmbreonScale += UMBREON_STEP * deltaTime;
     if (gUmbreonDir == Smaller) gUmbreonScale -= UMBREON_STEP * deltaTime;
 
     if (gUmbreonScale > UMBREON_MAX) gUmbreonDir = Smaller;
     if (gUmbreonScale < UMBREON_MIN) gUmbreonDir = Bigger;
 
-    // Umbreon wobble (vertical sine)
     gUmbreonWobbleTime += UMBREON_WOBBLE_SPEED * deltaTime;
 
-    // Umbreon lane movement (left-right + wrap + wobble)
     if (gUmbreonLane == BOTTOM_LANE) {
         gUmbreonPos.x += UMBREON_SPEED * deltaTime;
 
@@ -161,11 +157,11 @@ void update()
         }
     }
 
-    // Chandelure rotation
+    // Chandelure
     gChandelureRotation += CHANDELURE_ROT_SPEED * deltaTime;
     if (gChandelureRotation >= 360.0f) gChandelureRotation -= 360.0f;
 
-    // Chandelure translation pattern (small orbit around Dragonite + relative offset)
+    // Chandelure
     gChandelureOrbit += CHANDELURE_ORBIT_SPEED * deltaTime;
 }
 
@@ -175,7 +171,7 @@ void render()
 
     ClearBackground(ColorFromHex("#000000"));
 
-    // Backgrounds (DrawTexturePro only — lecture compliant)
+    // Backgrounds
     {
         Texture2D bg = gBackground1;
         if (gCurrentBG == 1) bg = gBackground2;
@@ -188,7 +184,7 @@ void render()
         DrawTexturePro(bg, bgSrc, bgDst, bgOri, 0.0f, WHITE);
     }
 
-    // Dragonite (centered)
+    // Dragonite
     {
         float w = gDragonite.width  * DRAGONITE_SCALE;
         float h = gDragonite.height * DRAGONITE_SCALE;
@@ -200,7 +196,7 @@ void render()
         DrawTexturePro(gDragonite, src, dst, ori, 0.0f, WHITE);
     }
 
-    // Chandelure (relative to Dragonite + own orbit + rotating)
+    // Chandelure
     {
         float w = gChandelure.width  * CHANDELURE_SCALE;
         float h = gChandelure.height * CHANDELURE_SCALE;
@@ -220,7 +216,7 @@ void render()
         DrawTexturePro(gChandelure, src, dst, ori, gChandelureRotation, WHITE);
     }
 
-    // Umbreon (centered + scaling + wobble + lane)
+    // Umbreon
     {
         float margin = 20.0f;
 
