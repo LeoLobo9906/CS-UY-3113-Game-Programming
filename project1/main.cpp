@@ -18,10 +18,6 @@ constexpr int SCREEN_WIDTH  = (int)(800 * 1.5f);
 constexpr int SCREEN_HEIGHT = (int)(450 * 1.5f);
 constexpr int FPS           = 60;
 
-constexpr float RADIUS      = 100.0f;
-constexpr float ORBIT_SPEED = 2.0f;
-
-
 constexpr Vector2 ORIGIN = {
     SCREEN_WIDTH  / 2.0f,
     SCREEN_HEIGHT / 2.0f
@@ -44,25 +40,36 @@ constexpr float BG_SECONDS = 2.0f;
 
 // Dragonite
 Texture2D gDragonite;
-constexpr float DRAGONITE_SCALE = 0.4f;
-float   gOrbitLocation = 0.0f;
-Vector2 gPosition      = ORIGIN;
+constexpr float DRAGONITE_SCALE = 0.40f;
+
+constexpr float DRAGONITE_RADIUS      = 100.0f;
+constexpr float DRAGONITE_ORBIT_SPEED = 2.0f;
+
+float   gDragoniteOrbit = 0.0f;
+Vector2 gDragonitePos   = ORIGIN;
 
 // Chandelure
 Texture2D gChandelure;
-float gChandelureRotation = 0.0f;
 constexpr float CHANDELURE_SCALE     = 0.25f;
 constexpr float CHANDELURE_ROT_SPEED = 80.0f;
 
+float gChandelureRotation = 0.0f;
+
+// Relative offset from Dragonite (still “in relation”)
 constexpr float CHANDELURE_OFFSET_X = 150.0f;
 constexpr float CHANDELURE_OFFSET_Y = 80.0f;
+
+// Extra: small orbit around Dragonite so translation pattern differs
+float gChandelureOrbit = 0.0f;
+constexpr float CHANDELURE_ORBIT_RADIUS = 60.0f;
+constexpr float CHANDELURE_ORBIT_SPEED  = 3.5f;
 
 // Umbreon
 Texture2D gUmbreon;
 
 Direction gUmbreonDir = Bigger;
 
-float gUmbreonScale   = 0.20f;
+float gUmbreonScale = 0.20f;
 
 constexpr float UMBREON_MIN  = 0.16f;
 constexpr float UMBREON_MAX  = 0.26f;
@@ -76,7 +83,6 @@ float gUmbreonWobbleTime = 0.0f;
 constexpr float UMBREON_WOBBLE_SPEED = 8.0f;
 constexpr float UMBREON_WOBBLE_AMP   = 36.0f;
 
-
 void initialise();
 void processInput();
 void update();
@@ -88,9 +94,9 @@ void initialise()
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Project 2: Simple 2D Scene");
     SetTargetFPS(FPS);
 
-    gDragonite   = LoadTexture("assets/dragonite.png");
-    gChandelure  = LoadTexture("assets/chandelure.png");
-    gUmbreon     = LoadTexture("assets/umbreon.png");
+    gDragonite  = LoadTexture("assets/dragonite.png");
+    gChandelure = LoadTexture("assets/chandelure.png");
+    gUmbreon    = LoadTexture("assets/umbreon.png");
 
     gBackground1 = LoadTexture("assets/background_1.png");
     gBackground2 = LoadTexture("assets/background_2.png");
@@ -120,23 +126,24 @@ void update()
         if (gCurrentBG > 2) gCurrentBG = 0;
     }
 
-    // Dragonite
-    gOrbitLocation += ORBIT_SPEED * deltaTime;
-    float theta = gOrbitLocation;
-    gPosition.x = ORIGIN.x + RADIUS * cosf(theta);
-    gPosition.y = ORIGIN.y + RADIUS * sinf(theta);
+    // Dragonite (orbit around screen center)
+    gDragoniteOrbit += DRAGONITE_ORBIT_SPEED * deltaTime;
+    float theta = gDragoniteOrbit;
 
-    // Umbreon
+    gDragonitePos.x = ORIGIN.x + DRAGONITE_RADIUS * cosf(theta);
+    gDragonitePos.y = ORIGIN.y + DRAGONITE_RADIUS * sinf(theta);
+
+    // Umbreon scaling (heartbeat)
     if (gUmbreonDir == Bigger)  gUmbreonScale += UMBREON_STEP * deltaTime;
     if (gUmbreonDir == Smaller) gUmbreonScale -= UMBREON_STEP * deltaTime;
 
     if (gUmbreonScale > UMBREON_MAX) gUmbreonDir = Smaller;
     if (gUmbreonScale < UMBREON_MIN) gUmbreonDir = Bigger;
 
-    // Umbreon
+    // Umbreon wobble (vertical sine)
     gUmbreonWobbleTime += UMBREON_WOBBLE_SPEED * deltaTime;
 
-    // Umbreon
+    // Umbreon lane movement (left-right + wrap + wobble)
     if (gUmbreonLane == BOTTOM_LANE) {
         gUmbreonPos.x += UMBREON_SPEED * deltaTime;
 
@@ -154,9 +161,12 @@ void update()
         }
     }
 
-    // Chandelure
+    // Chandelure rotation
     gChandelureRotation += CHANDELURE_ROT_SPEED * deltaTime;
     if (gChandelureRotation >= 360.0f) gChandelureRotation -= 360.0f;
+
+    // Chandelure translation pattern (small orbit around Dragonite + relative offset)
+    gChandelureOrbit += CHANDELURE_ORBIT_SPEED * deltaTime;
 }
 
 void render()
@@ -165,43 +175,52 @@ void render()
 
     ClearBackground(ColorFromHex("#000000"));
 
-    // Background
-    if (gCurrentBG == 0) DrawTexture(gBackground1, 0, 0, WHITE);
-    if (gCurrentBG == 1) DrawTexture(gBackground2, 0, 0, WHITE);
-    if (gCurrentBG == 2) DrawTexture(gBackground3, 0, 0, WHITE);
-
-    // Dragonite
+    // Backgrounds (DrawTexturePro only — lecture compliant)
     {
-        Rectangle src = { 0.0f, 0.0f, (float)gDragonite.width, (float)gDragonite.height };
+        Texture2D bg = gBackground1;
+        if (gCurrentBG == 1) bg = gBackground2;
+        if (gCurrentBG == 2) bg = gBackground3;
 
-        Rectangle dst = {
-            gPosition.x,
-            gPosition.y,
-            gDragonite.width  * DRAGONITE_SCALE,
-            gDragonite.height * DRAGONITE_SCALE
-        };
+        Rectangle bgSrc = { 0.0f, 0.0f, (float)bg.width, (float)bg.height };
+        Rectangle bgDst = { 0.0f, 0.0f, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT };
+        Vector2   bgOri = { 0.0f, 0.0f };
 
-        Vector2 origin = { dst.width / 2.0f, dst.height / 2.0f };
-
-        DrawTexturePro(gDragonite, src, dst, origin, 0.0f, WHITE);
+        DrawTexturePro(bg, bgSrc, bgDst, bgOri, 0.0f, WHITE);
     }
 
-    // Chandelure
+    // Dragonite (centered)
+    {
+        float w = gDragonite.width  * DRAGONITE_SCALE;
+        float h = gDragonite.height * DRAGONITE_SCALE;
+
+        Rectangle src = { 0.0f, 0.0f, (float)gDragonite.width, (float)gDragonite.height };
+        Rectangle dst = { gDragonitePos.x - w / 2.0f, gDragonitePos.y - h / 2.0f, w, h };
+        Vector2   ori = { w / 2.0f, h / 2.0f };
+
+        DrawTexturePro(gDragonite, src, dst, ori, 0.0f, WHITE);
+    }
+
+    // Chandelure (relative to Dragonite + own orbit + rotating)
     {
         float w = gChandelure.width  * CHANDELURE_SCALE;
         float h = gChandelure.height * CHANDELURE_SCALE;
 
-        float cx = gPosition.x + CHANDELURE_OFFSET_X;
-        float cy = gPosition.y + CHANDELURE_OFFSET_Y;
+        float cx = gDragonitePos.x
+                 + CHANDELURE_OFFSET_X
+                 + CHANDELURE_ORBIT_RADIUS * cosf(gChandelureOrbit);
+
+        float cy = gDragonitePos.y
+                 + CHANDELURE_OFFSET_Y
+                 + CHANDELURE_ORBIT_RADIUS * sinf(gChandelureOrbit);
 
         Rectangle src = { 0.0f, 0.0f, (float)gChandelure.width, (float)gChandelure.height };
-        Rectangle dst = { cx, cy, w, h };
-        Vector2 origin = { w / 2.0f, h / 2.0f };
+        Rectangle dst = { cx - w / 2.0f, cy - h / 2.0f, w, h };
+        Vector2   ori = { w / 2.0f, h / 2.0f };
 
-        DrawTexturePro(gChandelure, src, dst, origin, gChandelureRotation, WHITE);
+        DrawTexturePro(gChandelure, src, dst, ori, gChandelureRotation, WHITE);
     }
 
-    // Umbreon
+    // Umbreon (centered + scaling + wobble + lane)
     {
         float margin = 20.0f;
 
@@ -218,10 +237,10 @@ void render()
         y += UMBREON_WOBBLE_AMP * sinf(gUmbreonWobbleTime);
 
         Rectangle src = { 0.0f, 0.0f, (float)gUmbreon.width, (float)gUmbreon.height };
-        Rectangle dst = { gUmbreonPos.x, y, w, h };
-        Vector2 origin = { w / 2.0f, h / 2.0f };
+        Rectangle dst = { gUmbreonPos.x - w / 2.0f, y - h / 2.0f, w, h };
+        Vector2   ori = { w / 2.0f, h / 2.0f };
 
-        DrawTexturePro(gUmbreon, src, dst, origin, 0.0f, WHITE);
+        DrawTexturePro(gUmbreon, src, dst, ori, 0.0f, WHITE);
     }
 
     EndDrawing();
