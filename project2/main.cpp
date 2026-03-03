@@ -11,7 +11,7 @@
 #include "CS3113/cs3113.h"
 #include <math.h>
 
-// ─── Screen / Game Constants ──────────────────────────────────────────────────
+// Constants
 constexpr int SCREEN_WIDTH  = (int)(800 * 1.5f);
 constexpr int SCREEN_HEIGHT = (int)(450 * 1.5f);
 constexpr int FPS           = 60;
@@ -22,29 +22,26 @@ constexpr Vector2 ORIGIN = {
     SCREEN_HEIGHT / 2.0f
 };
 
-// ─── Paddle Constants ─────────────────────────────────────────────────────────
 constexpr float PADDLE_W      = 80.0f;
 constexpr float PADDLE_H      = 120.0f;
 constexpr float PADDLE_SPEED  = 420.0f;
 constexpr float PADDLE_MARGIN = 40.0f;
 
-// ─── Ball Constants ───────────────────────────────────────────────────────────
 constexpr float BALL_SIZE       = 60.0f;
 constexpr float BALL_SPEED_INIT = 380.0f;
 constexpr int   MAX_BALLS       = 3;
 
-// ─── Asset Paths ──────────────────────────────────────────────────────────────
+// Asset
 constexpr char BG_FP[]     = "assets/background field.png";
 constexpr char SONIC_FP[]  = "assets/sonic.png";
 constexpr char MARIO_FP[]  = "assets/mario.png";
 constexpr char BALL_FP[]   = "assets/ball.png";
 constexpr char ENDMSG_FP[] = "assets/end_message.png";
 
-// ─── Enums ────────────────────────────────────────────────────────────────────
+// Enums
 enum GameState   { PLAYING, GAME_OVER };
-enum AIDirection { AI_UP, AI_DOWN };   // same pattern as Umbreon Bigger/Smaller
+enum AIDirection { AI_UP, AI_DOWN };
 
-// ─── Global State ─────────────────────────────────────────────────────────────
 AppStatus  gAppStatus   = RUNNING;
 GameState  gGameState   = PLAYING;
 float      gPrevTicks   = 0.0f;
@@ -55,17 +52,15 @@ int        gSonicScore  = 0;
 int        gMarioScore  = 0;
 int        gWinner      = 0;   // 1 = Sonic, 2 = Mario
 
-// AI bounce direction — same idea as your Umbreon Bigger/Smaller enum
 AIDirection gAIDir = AI_DOWN;
 
-// ─── Textures ─────────────────────────────────────────────────────────────────
+// Textures
 Texture2D gTexBG;
 Texture2D gTexSonic;
 Texture2D gTexMario;
 Texture2D gTexBall;
 Texture2D gTexEndMsg;
 
-// ─── Paddle Data ──────────────────────────────────────────────────────────────
 Vector2 gSonicPos   = { PADDLE_MARGIN + PADDLE_W / 2.0f, ORIGIN.y };
 Vector2 gSonicScale = { PADDLE_W, PADDLE_H };
 Vector2 gSonicMov   = { 0.0f, 0.0f };
@@ -74,7 +69,6 @@ Vector2 gMarioPos   = { SCREEN_WIDTH - PADDLE_MARGIN - PADDLE_W / 2.0f, ORIGIN.y
 Vector2 gMarioScale = { PADDLE_W, PADDLE_H };
 Vector2 gMarioMov   = { 0.0f, 0.0f };
 
-// ─── Ball Data ────────────────────────────────────────────────────────────────
 struct Ball {
     Vector2 pos;
     Vector2 vel;
@@ -84,7 +78,6 @@ struct Ball {
 
 Ball gBalls[MAX_BALLS];
 
-// ─── Helper: draw texture centred at pos ──────────────────────────────────────
 void drawTex(const Texture2D &tex, Vector2 pos, Vector2 scale, float angle = 0.0f)
 {
     Rectangle src = { 0.0f, 0.0f, (float)tex.width, (float)tex.height };
@@ -93,7 +86,6 @@ void drawTex(const Texture2D &tex, Vector2 pos, Vector2 scale, float angle = 0.0
     DrawTexturePro(tex, src, dst, ori, angle, WHITE);
 }
 
-// ─── Box-to-box collision (from lecture 4 / your exercise code) ───────────────
 bool isColliding(const Vector2 *posA, const Vector2 *scaleA,
                  const Vector2 *posB, const Vector2 *scaleB)
 {
@@ -102,18 +94,15 @@ bool isColliding(const Vector2 *posA, const Vector2 *scaleA,
     return (dx < 0.0f && dy < 0.0f);
 }
 
-// ─── Reset one ball to centre with a fresh velocity ───────────────────────────
 void resetBall(int i)
 {
     gBalls[i].scale = { BALL_SIZE, BALL_SIZE };
 
-    // Stagger Y so multiple balls don't overlap
     gBalls[i].pos = {
         ORIGIN.x,
         ORIGIN.y + i * 70.0f - (MAX_BALLS - 1) * 35.0f
     };
 
-    // Alternate serve direction per ball index
     float dx = (i % 2 == 0) ?  BALL_SPEED_INIT : -BALL_SPEED_INIT;
     float dy = (i % 2 == 0) ?  BALL_SPEED_INIT * 0.6f
                              : -BALL_SPEED_INIT * 0.6f;
@@ -122,7 +111,6 @@ void resetBall(int i)
     gBalls[i].active = (i < gActiveBalls);
 }
 
-// ─── Initialise ───────────────────────────────────────────────────────────────
 void initialise()
 {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sonic vs Mario: Soccer Pong");
@@ -137,22 +125,18 @@ void initialise()
     for (int i = 0; i < MAX_BALLS; i++) resetBall(i);
 }
 
-// ─── Process Input ────────────────────────────────────────────────────────────
 void processInput()
 {
     if (IsKeyPressed(KEY_Q) || WindowShouldClose()) gAppStatus = TERMINATED;
 
     if (gGameState == GAME_OVER) return;
 
-    // Toggle AI for Mario
     if (IsKeyPressed(KEY_T)) gMarioIsAI = !gMarioIsAI;
 
-    // Number keys 1-3: change active ball count
     if (IsKeyPressed(KEY_ONE))   gActiveBalls = 1;
     if (IsKeyPressed(KEY_TWO))   gActiveBalls = 2;
     if (IsKeyPressed(KEY_THREE)) gActiveBalls = 3;
 
-    // Activate/deactivate balls to match new count
     for (int i = 0; i < MAX_BALLS; i++)
     {
         bool shouldBeActive = (i < gActiveBalls);
@@ -160,12 +144,10 @@ void processInput()
         gBalls[i].active = shouldBeActive;
     }
 
-    // Sonic — W / S
     gSonicMov = { 0.0f, 0.0f };
     if (IsKeyDown(KEY_W)) gSonicMov.y = -1.0f;
     if (IsKeyDown(KEY_S)) gSonicMov.y =  1.0f;
 
-    // Mario — Up / Down (locked out when AI is on)
     gMarioMov = { 0.0f, 0.0f };
     if (!gMarioIsAI)
     {
@@ -174,7 +156,6 @@ void processInput()
     }
 }
 
-// ─── Update ───────────────────────────────────────────────────────────────────
 void update()
 {
     if (gGameState == GAME_OVER) return;
@@ -183,15 +164,12 @@ void update()
     float deltaTime = ticks - gPrevTicks;
     gPrevTicks      = ticks;
 
-    // ── Sonic movement + screen clamp
     gSonicPos.y += PADDLE_SPEED * gSonicMov.y * deltaTime;
     if (gSonicPos.y - PADDLE_H / 2.0f < 0.0f)
         gSonicPos.y = PADDLE_H / 2.0f;
     if (gSonicPos.y + PADDLE_H / 2.0f > SCREEN_HEIGHT)
         gSonicPos.y = SCREEN_HEIGHT - PADDLE_H / 2.0f;
 
-    // ── Mario AI: bounce up and down, flip at edges
-    //    Same pattern as your Umbreon Bigger/Smaller direction code
     if (gMarioIsAI)
     {
         if (gAIDir == AI_DOWN) gMarioMov.y =  1.0f;
@@ -201,14 +179,12 @@ void update()
         if (gMarioPos.y - PADDLE_H / 2.0f <= 0.0f)          gAIDir = AI_DOWN;
     }
 
-    // ── Mario movement + screen clamp
     gMarioPos.y += PADDLE_SPEED * gMarioMov.y * deltaTime;
     if (gMarioPos.y - PADDLE_H / 2.0f < 0.0f)
         gMarioPos.y = PADDLE_H / 2.0f;
     if (gMarioPos.y + PADDLE_H / 2.0f > SCREEN_HEIGHT)
         gMarioPos.y = SCREEN_HEIGHT - PADDLE_H / 2.0f;
 
-    // ── Update each active ball
     for (int i = 0; i < MAX_BALLS; i++)
     {
         if (!gBalls[i].active) continue;
@@ -218,7 +194,6 @@ void update()
         b.pos.x += b.vel.x * deltaTime;
         b.pos.y += b.vel.y * deltaTime;
 
-        // Top / bottom wall bounce
         if (b.pos.y - BALL_SIZE / 2.0f <= 0.0f)
         {
             b.pos.y = BALL_SIZE / 2.0f;
@@ -230,21 +205,21 @@ void update()
             b.vel.y = -fabs(b.vel.y);
         }
 
-        // Sonic paddle collision (left side)
+        // Sonic
         if (isColliding(&b.pos, &b.scale, &gSonicPos, &gSonicScale))
         {
             b.pos.x = gSonicPos.x + (gSonicScale.x + b.scale.x) / 2.0f;
             b.vel.x = fabs(b.vel.x);
         }
 
-        // Mario paddle collision (right side)
+        // Mario
         if (isColliding(&b.pos, &b.scale, &gMarioPos, &gMarioScale))
         {
             b.pos.x = gMarioPos.x - (gMarioScale.x + b.scale.x) / 2.0f;
             b.vel.x = -fabs(b.vel.x);
         }
 
-        // Ball exits left → Mario scores
+        // Mario scores
         if (b.pos.x + BALL_SIZE / 2.0f < 0.0f)
         {
             gMarioScore++;
@@ -252,7 +227,7 @@ void update()
             else resetBall(i);
         }
 
-        // Ball exits right → Sonic scores
+        // Sonic scores
         if (b.pos.x - BALL_SIZE / 2.0f > SCREEN_WIDTH)
         {
             gSonicScore++;
@@ -262,7 +237,6 @@ void update()
     }
 }
 
-// ─── Render ───────────────────────────────────────────────────────────────────
 void render()
 {
     BeginDrawing();
@@ -281,13 +255,11 @@ void render()
     DrawText(TextFormat("%d", gSonicScore), SCREEN_WIDTH / 4,     20, 60, YELLOW);
     DrawText(TextFormat("%d", gMarioScore), 3 * SCREEN_WIDTH / 4, 20, 60, RED);
 
-    // Mode indicator (centred at top)
     if (gMarioIsAI)
         DrawText("1P MODE",
                  SCREEN_WIDTH / 2 - MeasureText("1P MODE", 30) / 2,
                  20, 30, WHITE);
 
-    // Ball count hint at bottom
     const char *hint = TextFormat("Balls: %d  (press 1 / 2 / 3)", gActiveBalls);
     DrawText(hint,
              SCREEN_WIDTH / 2 - MeasureText(hint, 20) / 2,
@@ -306,10 +278,8 @@ void render()
         drawTex(gTexBall, gBalls[i].pos, gBalls[i].scale);
     }
 
-    // Game Over overlay
     if (gGameState == GAME_OVER)
     {
-        // Dark overlay
         DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, { 0, 0, 0, 160 });
 
         // end_message.png centred
@@ -336,7 +306,6 @@ void render()
     EndDrawing();
 }
 
-// ─── Shutdown ─────────────────────────────────────────────────────────────────
 void shutdown()
 {
     UnloadTexture(gTexBG);
@@ -347,7 +316,6 @@ void shutdown()
     CloseWindow();
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
 int main(void)
 {
     initialise();
