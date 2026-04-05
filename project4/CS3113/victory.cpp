@@ -15,7 +15,7 @@ void Victory::initialise()
 
 void Victory::update(float deltaTime)
 {
-    if (IsKeyPressed(KEY_ENTER)) mGameState.nextSceneID = 0;
+    if (IsKeyPressed(KEY_E)) mGameState.nextSceneID = 0;
 }
 
 void Victory::render()
@@ -37,7 +37,7 @@ void Victory::render()
              (int)mOrigin.x - MeasureText(sub2, 22) / 2,
              (int)mOrigin.y + 50, 22, LIGHTGRAY);
 
-    const char *prompt = "Press ENTER to return to Menu";
+    const char *prompt = "Press E to return to Menu";
     DrawText(prompt,
              (int)mOrigin.x - MeasureText(prompt, 24) / 2,
              (int)mOrigin.y + 120, 24, GREEN);
