@@ -6,6 +6,8 @@
 class DanceMenu : public DanceScene
 {
 private:
+    Shader mDancerShader;
+    int    mShaderTimeLoc;
     float mTitlePulse = 0.0f;
     int   mSelectedOption = 0; // 0 = Easy, 1 = Hard
 

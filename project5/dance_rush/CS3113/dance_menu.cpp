@@ -1,5 +1,6 @@
 #include "dance_menu.h"
 #include <math.h>
+#include <algorithm>
 
 DanceMenu::DanceMenu()
     : DanceScene{ {0.0f}, nullptr } {}
@@ -25,6 +26,13 @@ void DanceMenu::initialise()
     UnloadImage(img);
     SetTextureFilter(mDancer.texture, TEXTURE_FILTER_POINT);
 
+    mDancerShader = LoadShader(
+        "assets/shaders/menu_dancer_vertex.glsl",
+        "assets/shaders/menu_dancer_fragment.glsl"
+    );
+
+    mShaderTimeLoc = GetShaderLocation(mDancerShader, "time");
+
     mDancer.frameCount   = 4;
     mDancer.currentFrame = 0;
     mDancer.frameTimer   = 0.0f;
@@ -42,6 +50,10 @@ void DanceMenu::initialise()
 
 void DanceMenu::update(float deltaTime)
 {
+    float t = (float)GetTime();
+    if (mDancerShader.id != 0 && mShaderTimeLoc != -1)
+        SetShaderValue(mDancerShader, mShaderTimeLoc, &t, SHADER_UNIFORM_FLOAT);
+
     UpdateMusicStream(mGameState.bgm);
     updateDancer(deltaTime);
 
@@ -59,9 +71,9 @@ void DanceMenu::update(float deltaTime)
         StopMusicStream(mGameState.bgm);
 
         if (mSelectedOption == 0)
-            mGameState.nextSceneID = 1; // Easy
+            mGameState.nextSceneID = 1;
         else
-            mGameState.nextSceneID = 2; // Hard
+            mGameState.nextSceneID = 2;
     }
 }
 
@@ -86,7 +98,47 @@ void DanceMenu::render()
     DrawText(sub, (int)mOrigin.x - subW/2,
              (int)(mOrigin.y - 190.0f), 22, {200,240,255,220});
 
-    drawDancerBox();
+    if (mBoxTex.id != 0)
+    {
+        float bw = (float)mBoxTex.width * 3.0f;
+        float bh = (float)mBoxTex.height * 3.0f;
+
+        DrawTexturePro(
+            mBoxTex,
+            {0,0,(float)mBoxTex.width,(float)mBoxTex.height},
+            {mDancer.position.x - bw/2, mDancer.position.y - bh/2, bw, bh},
+            {0,0}, 0.0f, WHITE
+        );
+    }
+
+    static const int FX[4] = {  32, 100, 200, 300 };
+    static const int FY[4] = {   0,   8,   8,   0 };
+    static const int FW[4] = {  68, 100, 100,  59 };
+    static const int FH[4] = {  96,  87,  86,  94 };
+
+    int f = mDancer.currentFrame;
+
+    Rectangle src = {
+        (float)FX[f],
+        (float)FY[f],
+        (float)FW[f],
+        (float)FH[f]
+    };
+
+    float scale = mDancer.drawSize / (float)std::max(FW[f], FH[f]);
+    float dw = FW[f] * scale;
+    float dh = FH[f] * scale;
+
+    Rectangle dst = {
+        mDancer.position.x - dw / 2.0f,
+        mDancer.position.y - dh / 2.0f,
+        dw,
+        dh
+    };
+
+    if (mDancerShader.id != 0) BeginShaderMode(mDancerShader);
+    DrawTexturePro(mDancer.texture, src, dst, {0, 0}, 0.0f, WHITE);
+    if (mDancerShader.id != 0) EndShaderMode();
 
     const char *easy = "EASY";
     const char *hard = "HARD";
@@ -120,75 +172,33 @@ void DanceMenu::render()
 
     unsigned char blinkA = (sinf(mTitlePulse * 1.8f) > 0.0f) ? 255 : 0;
 
-    // ─── CONTROL GUIDE ON RIGHT SIDE ─────────────────────────────
+    const char *prompt = "PRESS ENTER TO START";
+    int promptW = MeasureText(prompt, 22);
+    DrawText(prompt, (int)mOrigin.x - promptW/2,
+             (int)(mOrigin.y + 300.0f), 22, {255,255,255,blinkA});
+
     float guideX = mOrigin.x + 210.0f;
     float guideY = mOrigin.y + 120.0f;
 
-    const char *controlsTitle = "CONTROLS";
-    DrawText(controlsTitle,
-             (int)guideX,
-             (int)guideY,
-             20,
-             {255,220,80,255});
-
-    const char *controls1 = "ARROWS / WASD";
-    DrawText(controls1,
-             (int)guideX,
-             (int)(guideY + 35.0f),
-             16,
-             {220,240,255,220});
-
-    const char *controls2 = "HIT NOTES";
-    DrawText(controls2,
-             (int)guideX,
-             (int)(guideY + 58.0f),
-             16,
-             {220,240,255,220});
-
-    const char *controls3 = "UP / DOWN";
-    DrawText(controls3,
-             (int)guideX,
-             (int)(guideY + 95.0f),
-             16,
-             {220,240,255,220});
-
-    const char *controls4 = "SELECT LEVEL";
-    DrawText(controls4,
-             (int)guideX,
-             (int)(guideY + 118.0f),
-             16,
-             {220,240,255,220});
-
-    const char *controls5 = "ENTER = START";
-    DrawText(controls5,
-             (int)guideX,
-             (int)(guideY + 155.0f),
-             16,
-             {220,240,255,220});
-
-    const char *controls6 = "ESC = MENU";
-    DrawText(controls6,
-             (int)guideX,
-             (int)(guideY + 178.0f),
-             16,
-             {220,240,255,180});
-
-    const char *controls7 = "Q = QUIT";
-    DrawText(controls7,
-             (int)guideX,
-             (int)(guideY + 201.0f),
-             16,
-             {220,240,255,180});
+    DrawText("CONTROLS", (int)guideX, (int)guideY, 20, {255,220,80,255});
+    DrawText("ARROWS / WASD", (int)guideX, (int)(guideY + 35.0f), 16, {220,240,255,220});
+    DrawText("HIT NOTES", (int)guideX, (int)(guideY + 58.0f), 16, {220,240,255,220});
+    DrawText("UP / DOWN", (int)guideX, (int)(guideY + 95.0f), 16, {220,240,255,220});
+    DrawText("SELECT LEVEL", (int)guideX, (int)(guideY + 118.0f), 16, {220,240,255,220});
+    DrawText("ENTER = START", (int)guideX, (int)(guideY + 155.0f), 16, {220,240,255,220});
+    DrawText("ESC = MENU", (int)guideX, (int)(guideY + 178.0f), 16, {220,240,255,180});
+    DrawText("Q = QUIT", (int)guideX, (int)(guideY + 201.0f), 16, {220,240,255,180});
 }
 
 void DanceMenu::shutdown()
 {
+    if (mDancerShader.id != 0) UnloadShader(mDancerShader);
     if (mDancer.texture.id != 0) UnloadTexture(mDancer.texture);
     if (mBoxTex.id         != 0) UnloadTexture(mBoxTex);
     if (mBgTile.id         != 0) UnloadTexture(mBgTile);
-
     UnloadMusicStream(mGameState.bgm);
 
+    mDancerShader.id = 0;
     mDancer.texture.id = 0;
     mBoxTex.id = 0;
     mBgTile.id = 0;
