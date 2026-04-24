@@ -1,0 +1,296 @@
+Dance Rush — Song Beat Timestamp Chart
+Detected BPM: 167
+Total detected beats: 277
+Got tired of song on April 17th 2:43pm
+
+Song Sections
+Section        Start       End
+start          0:00.00    0:00.66
+verse          0:00.66    0:31.02
+chorus         0:31.02    0:48.20
+verse          0:48.20    1:11.74
+verse          1:11.74    1:26.72
+chorus         1:26.72    1:49.24
+end            1:49.24    1:51.14
+
+Beat Timestamp Chart
+------------------------------------------
+Beat #   Time      Section     Downbeat
+------------------------------------------
+1        0:00.67   verse       YES
+2        0:01.54   verse       
+3        0:02.43   verse       
+4        0:03.15   verse       
+5        0:03.88   verse       YES
+6        0:04.61   verse       
+7        0:05.32   verse       
+8        0:06.03   verse       
+9        0:06.73   verse       YES
+10       0:07.46   verse       
+11       0:08.17   verse       
+12       0:08.89   verse       
+13       0:09.61   verse       YES
+14       0:10.29   verse       
+15       0:11.03   verse       
+16       0:11.72   verse       
+17       0:12.44   verse       YES
+18       0:13.16   verse       
+19       0:13.89   verse       
+20       0:14.63   verse       
+21       0:15.32   verse       YES
+22       0:16.06   verse       
+23       0:16.74   verse       
+24       0:17.47   verse       
+25       0:17.99   verse       YES
+26       0:18.44   verse       
+27       0:18.88   verse       
+28       0:19.25   verse       
+29       0:19.59   verse       YES
+30       0:19.97   verse       
+31       0:20.32   verse       
+32       0:20.68   verse       
+33       0:21.04   verse       YES
+34       0:21.39   verse       
+35       0:21.75   verse       
+36       0:22.11   verse       
+37       0:22.47   verse       YES
+38       0:22.82   verse       
+39       0:23.18   verse       
+40       0:23.52   verse       
+41       0:23.87   verse       YES
+42       0:24.24   verse       
+43       0:24.59   verse       
+44       0:24.96   verse       
+45       0:25.32   verse       YES
+46       0:25.67   verse       
+47       0:26.04   verse       
+48       0:26.38   verse       
+49       0:26.75   verse       YES
+50       0:27.10   verse       
+51       0:27.45   verse       
+52       0:27.81   verse       
+53       0:28.18   verse       YES
+54       0:28.53   verse       
+55       0:28.89   verse       
+56       0:29.26   verse       
+57       0:29.62   verse       YES
+58       0:29.96   verse       
+59       0:30.32   verse       
+60       0:30.67   verse       
+61       0:31.03   chorus      YES
+62       0:31.39   chorus      
+63       0:31.73   chorus      
+64       0:32.09   chorus      
+65       0:32.45   chorus      YES
+66       0:32.81   chorus      
+67       0:33.17   chorus      
+68       0:33.52   chorus      
+69       0:33.88   chorus      YES
+70       0:34.24   chorus      
+71       0:34.59   chorus      
+72       0:34.95   chorus      
+73       0:35.31   chorus      YES
+74       0:35.67   chorus      
+75       0:36.03   chorus      
+76       0:36.40   chorus      
+77       0:36.75   chorus      YES
+78       0:37.11   chorus      
+79       0:37.47   chorus      
+80       0:37.81   chorus      
+81       0:38.18   chorus      YES
+82       0:38.53   chorus      
+83       0:38.88   chorus      
+84       0:39.24   chorus      
+85       0:39.60   chorus      YES
+86       0:39.95   chorus      
+87       0:40.32   chorus      
+88       0:40.67   chorus      
+89       0:41.03   chorus      YES
+90       0:41.39   chorus      
+91       0:41.74   chorus      
+92       0:42.11   chorus      
+93       0:42.46   chorus      YES
+94       0:42.82   chorus      
+95       0:43.18   chorus      
+96       0:43.53   chorus      
+97       0:43.89   chorus      YES
+98       0:44.25   chorus      
+99       0:44.60   chorus      
+100      0:44.95   chorus      
+101      0:45.31   chorus      YES
+102      0:45.68   chorus      
+103      0:46.04   chorus      
+104      0:46.41   chorus      
+105      0:46.76   chorus      YES
+106      0:47.11   chorus      
+107      0:47.47   chorus      
+108      0:47.83   chorus      
+109      0:48.20   verse       YES
+110      0:48.54   verse       
+111      0:48.89   verse       
+112      0:49.25   verse       
+113      0:49.60   verse       YES
+114      0:49.96   verse       
+115      0:50.32   verse       
+116      0:50.68   verse       
+117      0:51.04   verse       YES
+118      0:51.39   verse       
+119      0:51.74   verse       
+120      0:52.10   verse       
+121      0:52.45   verse       YES
+122      0:52.81   verse       
+123      0:53.17   verse       
+124      0:53.54   verse       
+125      0:53.90   verse       YES
+126      0:54.25   verse       
+127      0:54.60   verse       
+128      0:54.97   verse       
+129      0:55.32   verse       YES
+130      0:55.68   verse       
+131      0:56.04   verse       
+132      0:56.39   verse       
+133      0:56.75   verse       YES
+134      0:57.10   verse       
+135      0:57.46   verse       
+136      0:57.82   verse       
+137      0:58.18   verse       YES
+138      0:58.53   verse       
+139      0:58.89   verse       
+140      0:59.25   verse       
+141      0:59.61   verse       YES
+142      0:59.96   verse       
+143      1:00.31   verse       
+144      1:00.68   verse       
+145      1:01.03   verse       YES
+146      1:01.39   verse       
+147      1:01.74   verse       
+148      1:02.11   verse       
+149      1:02.47   verse       YES
+150      1:02.82   verse       
+151      1:03.18   verse       
+152      1:03.53   verse       
+153      1:03.89   verse       YES
+154      1:04.24   verse       
+155      1:04.59   verse       
+156      1:04.96   verse       
+157      1:05.33   verse       YES
+158      1:05.68   verse       
+159      1:06.03   verse       
+160      1:06.39   verse       
+161      1:06.75   verse       YES
+162      1:07.10   verse       
+163      1:07.45   verse       
+164      1:07.82   verse       
+165      1:08.18   verse       YES
+166      1:08.53   verse       
+167      1:08.88   verse       
+168      1:09.24   verse       
+169      1:09.59   verse       YES
+170      1:09.94   verse       
+171      1:10.31   verse       
+172      1:10.67   verse       
+173      1:11.03   verse       YES
+174      1:11.39   verse       
+175      1:11.75   verse       
+176      1:12.11   verse       
+177      1:12.46   verse       YES
+178      1:12.83   verse       
+179      1:13.18   verse       
+180      1:13.54   verse       
+181      1:13.89   verse       YES
+182      1:14.25   verse       
+183      1:14.60   verse       
+184      1:14.95   verse       
+185      1:15.32   verse       YES
+186      1:15.67   verse       
+187      1:16.04   verse       
+188      1:16.39   verse       
+189      1:16.76   verse       YES
+190      1:17.10   verse       
+191      1:17.46   verse       
+192      1:17.82   verse       
+193      1:18.19   verse       YES
+194      1:18.53   verse       
+195      1:18.89   verse       
+196      1:19.24   verse       
+197      1:19.60   verse       YES
+198      1:19.96   verse       
+199      1:20.32   verse       
+200      1:20.68   verse       
+201      1:21.04   verse       YES
+202      1:21.39   verse       
+203      1:21.75   verse       
+204      1:22.11   verse       
+205      1:22.47   verse       YES
+206      1:22.82   verse       
+207      1:23.18   verse       
+208      1:23.54   verse       
+209      1:23.89   verse       YES
+210      1:24.25   verse       
+211      1:24.61   verse       
+212      1:24.96   verse       
+213      1:25.32   verse       YES
+214      1:25.67   verse       
+215      1:26.02   verse       
+216      1:26.38   verse       
+217      1:26.73   chorus      YES
+218      1:27.10   chorus      
+219      1:27.45   chorus      
+220      1:27.81   chorus      
+221      1:28.16   chorus      YES
+222      1:28.52   chorus      
+223      1:28.88   chorus      
+224      1:29.24   chorus      
+225      1:29.60   chorus      YES
+226      1:29.95   chorus      
+227      1:30.32   chorus      
+228      1:30.67   chorus      
+229      1:31.03   chorus      YES
+230      1:31.39   chorus      
+231      1:31.75   chorus      
+232      1:32.11   chorus      
+233      1:32.46   chorus      YES
+234      1:32.82   chorus      
+235      1:33.18   chorus      
+236      1:33.53   chorus      
+237      1:33.89   chorus      YES
+238      1:34.24   chorus      
+239      1:34.60   chorus      
+240      1:34.96   chorus      
+241      1:35.32   chorus      YES
+242      1:35.67   chorus      
+243      1:36.02   chorus      
+244      1:36.38   chorus      
+245      1:36.74   chorus      YES
+246      1:37.10   chorus      
+247      1:37.45   chorus      
+248      1:37.81   chorus      
+249      1:38.17   chorus      YES
+250      1:38.53   chorus      
+251      1:38.88   chorus      
+252      1:39.24   chorus      
+253      1:39.61   chorus      YES
+254      1:39.96   chorus      
+255      1:40.32   chorus      
+256      1:40.67   chorus      
+257      1:41.04   chorus      YES
+258      1:41.39   chorus      
+259      1:41.74   chorus      
+260      1:42.10   chorus      
+261      1:42.46   chorus      YES
+262      1:42.82   chorus      
+263      1:43.17   chorus      
+264      1:43.53   chorus      
+265      1:43.89   chorus      YES
+266      1:44.25   chorus      
+267      1:44.61   chorus      
+268      1:44.95   chorus      
+269      1:45.31   chorus      YES
+270      1:45.67   chorus      
+271      1:46.03   chorus      
+272      1:46.37   chorus      
+273      1:46.74   chorus      YES
+274      1:47.10   chorus      
+275      1:47.46   chorus      
+276      1:47.82   chorus      
+277      1:48.17   chorus      YES
